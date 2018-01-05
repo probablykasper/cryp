@@ -1,0 +1,26 @@
+doctype html
+html
+    head
+        title Cryp
+        link(href='https://fonts.googleapis.com/css?family=Nunito:400,500', rel='stylesheet')
+        link(href='https://fonts.googleapis.com/css?family=Rubik:400,500', rel='stylesheet')
+        // css
+        link(rel='stylesheet', type='text/css', href='/global.css')
+    body
+        .bg
+        main.page-container !{pageHTML}
+        //- .dialogs
+        //-     include dialogs.pug
+        //- .fg
+        //- main.page-container.logged-in(data-page="/")
+        //-     include music/music.pug
+        //- main.page-container.logged-out(data-page="/")
+        //-     include login.pug
+        //- main.page-container.logged-out.logged-in(data-page="/404")
+        //-     include 404.pug
+        //- script
+        //-     | var path = "!{path}";
+        //-     | var loggedIn = !{loggedIn};
+        //- script(src='/js.cookie-2.1.4.min.js')
+        //- script(src='/rangeSlider-0.3.11.min.js')
+        script(src='/global.js')

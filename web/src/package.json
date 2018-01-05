@@ -1,0 +1,28 @@
+{
+    "name": "cryp",
+    "version": "1.0.0",
+    "description": "cryp website",
+    "author": "KH kasperkh.kh@gmail.com",
+    "main": "server.js",
+
+    "scripts": {
+        "dev": "nodemon server.js",
+        "production": "node server.js"
+    },
+    "dependencies": {
+        "nodemon": "1.14.x",
+
+        "express": "4.16.x",
+        "pug": "~2.0.0-rc.4",
+        "node-sass": "4.7.x",
+        "fs-path": "0.0.x",
+        "body-parser": "1.18.x",
+
+        "passport": "0.4.x",
+        "passport-google-oauth": "1.0.x",
+        "express-session": "1.15.x",
+        "connect-mongo": "2.0.x",
+
+        "mongoose": "~5.0.0-rc0"
+    }
+}

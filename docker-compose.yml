@@ -1,0 +1,33 @@
+version: "3.3"
+services:
+    web:
+        build: ./web
+        container_name: web
+        ports:
+            - 80:80
+        volumes:
+            - ./web/src:/usr/src/app
+        links:
+            - db
+        environment:
+            - "ENV=dev"
+            - "PROD_URL=http://cryp.kasp.io"
+    mongo-express:
+        image: mongo-express:0.42
+        ports:
+            - 8081:8081
+        links:
+            - db
+        environment:
+            - "ME_CONFIG_OPTIONS_EDITORTHEME=ambiance"
+            - "ME_CONFIG_MONGODB_SERVER=db"
+            - "ME_CONFIG_BASICAUTH_USERNAME=user"
+            - "ME_CONFIG_BASICAUTH_PASSWORD=fairly long password"
+    db:
+        image: mongo:3.6
+        ports:
+            - 27017:27017
+        restart: always
+        # build: ./mongo
+        # container_name: cryp-mongo
+        # volumes:
