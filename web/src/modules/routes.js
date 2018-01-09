@@ -30,8 +30,8 @@ module.exports = (app) => {
     function get(path, pugFile, variables) {
         if (typeof variables === "undefined") variables = {};
         app.get(path, (req, res) => {
-            function render(pugFilePrex, callback) {
-                app.render(pugFilePrex+pugFile, variables, (err, html) => {
+            function render(pugFilePrefix, callback) {
+                app.render(pugFilePrefix+pugFile, variables, (err, html) => {
                     if (err) {
                         callback(err);
                     } else {
@@ -41,8 +41,11 @@ module.exports = (app) => {
                 });
             }
 
+            variables.page = pugFile;
             if (res.locals.loggedIn) {
+                variables.loggedIn = res.locals.loggedIn;
                 variables.displayName = req.user.displayName;
+                variables.profilePictureURL = req.user.profilePictureURL;
                 render("logged-in/", (err) => {
                     logErr(1, err);
                     render("logged-out/", (err) => {

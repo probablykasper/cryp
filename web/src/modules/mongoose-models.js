@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
     displayName: String,
-    googleId: String
+    googleId: String,
+    profilePictureURL: String
 });
 
 module.exports = {
