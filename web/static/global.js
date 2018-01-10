@@ -188,8 +188,9 @@ $(document).ready(() => {
 
     }
     else if (page == "balance") {
-        console.log(4);
+
     }
+
 })();
 
 const primaryCurrency = "NOK";

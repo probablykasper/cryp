@@ -6,7 +6,7 @@ services:
         ports:
             - 80:80
         volumes:
-            - ./web/src:/usr/src/app
+            - ./web:/usr/src/app
         links:
             - db
         environment:
@@ -27,7 +27,6 @@ services:
         image: mongo:3.6
         ports:
             - 27017:27017
+        volumes:
+            - ./db/db:/data/db
         restart: always
-        # build: ./mongo
-        # container_name: cryp-mongo
-        # volumes:
