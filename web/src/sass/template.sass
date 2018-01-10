@@ -2,6 +2,7 @@ html
     font-family: "Rubik", sans-serif
 body
     background-color: #EEF5F9
+    display: grid
 header.site-header
     height: $header-height
     background-color: #16C19D
@@ -10,6 +11,7 @@ header.site-header
     justify-content: space-between
     padding: 0px 30px
     box-shadow: $shadow-1
+    min-width: 300px
     a.header-logo
         color: #FFFFFF
         font-size: 38px
@@ -17,9 +19,12 @@ header.site-header
     .menu-bar
         height: 100%
         line-height: $header-height
+        overflow-x: auto
+        overflow-y: hidden
+        white-space: nowrap
         a.menu-bar-item
             color: #FFFFFF
-            padding: 4px
+            padding: 4px 4px
             font-size: 16px
             margin: 0px 15px
     .account-icon

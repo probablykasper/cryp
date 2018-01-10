@@ -14,6 +14,36 @@ $(document).ready(() => {
             callback(object, key);
         }
     }
+    window.xhr = function(reqContent, url, callback, options = {}) {
+        var xhr = new XMLHttpRequest();
+        if (options.type == undefined)        options.type = "POST";
+        if (options.contentType == undefined) options.contentType = "json";
+        // if (options.contentType == undefined) options.contentType = "json";
+        xhr.open(options.type, url, true);
+        if (options.contentType == "values") {
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.send("data="+JSON.stringify(reqContent));
+        } else if (options.contentType == "json") {
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send(JSON.stringify(reqContent));
+        }
+        // else if (options.contentType == "multipart") {
+        //     // xhr.setRequestHeader("Content-type", "multipart/form-data");
+        // }
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                let res = JSON.parse(this.responseText);
+                if (!String(this.status).startsWith("2")) {
+                    console.error("HTTP error "+this.status);
+                    res.error = {
+                        code: 404,
+                        msg: null
+                    }
+                }
+                callback(res);
+            }
+        };
+    }
 })();
 (function ui() {
     if (loggedIn) {
@@ -26,6 +56,7 @@ $(document).ready(() => {
             }
         });
     }
+
     let tooltipTimeout;
     $(".tooltip-area").on({
         mouseenter: (e) => {
@@ -37,79 +68,131 @@ $(document).ready(() => {
             clearTimeout(tooltipTimeout);
             $(e.delegateTarget).children(".tooltip").removeClass("visible");
         }
-    })
+    });
+
+    if (page == "transactions") {
+
+
+
+        resizeInputs($('table.transactions-table tbody td'));
+        function resizeInputs($inputs) {
+            // var $inputs = $('table.transactions-table tbody td');
+
+            // Resize based on text if text.length > 0
+            // Otherwise resize based on the placeholder
+            function resizeForText(text) {
+                var $this = $(this);
+                if (!text.trim() && $this.attr('placeholder')) {
+                    text = $this.attr('placeholder').trim();
+                }
+                var $span = $this.parent().find('span');
+                $span.text(text);
+                var $inputSize = $span.width();
+                $this.css("width", $inputSize+1);
+            }
+
+            $inputs.find('input').on("input", function (e) {
+                var c = String.fromCharCode(e.keyCode | e.charCode);
+                var $this = $(this);
+                resizeForText.call($this, $this.val() + c);
+            });
+            // $inputs.find('input').keypress(function (e) {
+            //     console.log("input");
+            //     // if (e.which && e.charCode) {
+            //         var c = String.fromCharCode(e.keyCode | e.charCode);
+            //         var $this = $(this);
+            //         resizeForText.call($this, $this.val() + c);
+            //     // }
+            // });
+            //
+            // // Backspace event only fires for keyup
+            // $inputs.find('input').keyup(function (e) {
+            //     console.log("input2");
+            //     if (e.keyCode === 8 || e.keyCode === 46) {
+            //         resizeForText.call($(this), $(this).val());
+            //     }
+            // });
+
+            $inputs.find('input').each(function () {
+                var $this = $(this);
+                resizeForText.call($this, $this.val())
+            });
+        }
+
+        function addTransactionRow(transaction) {
+            const $newRow = $("tr.transaction-row-sample").clone();
+            $newRow.removeClass("transaction-row-sample");
+            if (transaction) { // else fields will be empty
+                $newRow.find("td.type select").val(transaction.type);
+                $newRow.find("td.buy-amount input").val(transaction.buy.amount);
+                $newRow.find("td.buy-currency input").val(transaction.buy.currency);
+                $newRow.find("td.sell-amount input").val(transaction.sell.amount);
+                $newRow.find("td.sell-currency input").val(transaction.sell.currency);
+                $newRow.find("td.fee-amount input").val(transaction.fee.amount);
+                $newRow.find("td.fee-currency input").val(transaction.fee.currency);
+                $newRow.find("td.exchange input").val(transaction.exchange);
+                $newRow.find("td.group input").val(transaction.group);
+                $newRow.find("td.note input").val(transaction.note);
+                $newRow.find("td.date input").val(transaction.date);
+
+            }
+            $(".transactions-table-card tbody").append($newRow);
+            resizeInputs($('table.transactions-table tbody td'));
+        }
+        for (let i = 0; i < transactions.length; i++) {
+            addTransactionRow(transactions[i]);
+        }
+
+        (function buttons() {
+
+            // New
+            $(".transactions-table-card button.new").on("click", () => {
+                addTransactionRow();
+            });
+
+            // Save
+            $(".transactions-table-card button.save").on("click", () => {
+                let newTransactions = [];
+                // loop rows
+                $(".transactions-table-card tbody tr").each((rowIndex, el) => {
+                    const $el = $(el);
+                    const type = $el.find("td.type select").val();
+                    const transaction = {
+                        type: type,
+                        buy: {
+                            amount: $el.find("td.buy-amount input").val(),
+                            currency: $el.find("td.buy-currency input").val()
+                        },
+                        sell: {
+                            amount: $el.find("td.sell-amount input").val(),
+                            currency: $el.find("td.sell-currency input").val()
+                        },
+                        fee: {
+                            amount: $el.find("td.fee-amount input").val(),
+                            currency: $el.find("td.fee-currency input").val()
+                        },
+                        exchange: $el.find("td.exchange input").val(),
+                        group: $el.find("td.group input").val(),
+                        note: $el.find("td.note input").val(),
+                        date: $el.find("td.date input").val(),
+                    };
+                    newTransactions[rowIndex] = transaction;
+                });
+                xhr(newTransactions, "/update-transactions", (res) => {
+                    if (res.err) {
+                        console.log("error sending xhr, when saving");
+                        console.log(err);
+                    } else {
+                        console.log("saved new transactions. Reloading...");
+                        location.reload();
+                    }
+                });
+            });
+        })();
+    }
 })();
 
 const primaryCurrency = "NOK";
-window.transactions = [
-    {
-        type: "fiatTrade",
-        buy: {
-            amount: "0.04073887",
-            currency: "BTC"
-        },
-        sell: {
-            amount: "932.03",
-            currency: "NOK"
-        },
-        // fee: [],
-        exchange: "Bittrex",
-        group: "",
-        note: "via Anycoin Direct",
-        date: new Date("2017-07-25 11:04:48")
-    },
-    {
-        type: "trade",
-        buy: {
-            amount: "6120.03355798",
-            currency: "SC"
-        },
-        sell: {
-            amount: "0.02006253",
-            currency: "BTC"
-        },
-        fee: {
-            amount: "0.00005003",
-            currency: "BTC"
-        },
-        exchange: "Bittrex",
-        group: "",
-        note: "",
-        date: new Date("2017-07-27 21:49:53")
-    },
-    {
-        type: "moveExchange",
-        amount: {
-            amount: "100",
-            currency: "SC"
-        },
-        fee: {
-            amount: "0.1",
-            currency: "SC"
-        },
-        fromExchange: "Bittrex",
-        toExchange: "SC Wallet",
-        group: "",
-        note: "",
-        date: new Date("2017-07-27 22:00:55")
-    },
-    {
-        type: "fiatTrade",
-        buy: {
-            amount: "300",
-            currency: "NOK"
-        },
-        sell: {
-            amount: "0.01073887",
-            currency: "BTC"
-        },
-        // fee: [],
-        exchange: "Bittrex",
-        group: "",
-        note: "via Anycoin Direct",
-        date: new Date("2017-07-28 11:00:00")
-    }
-];
 
 if (loggedIn) cryptoCalculations();
 function cryptoCalculations() {
@@ -140,7 +223,7 @@ function cryptoCalculations() {
         const type = transaction.type;
 
         const buy = transaction.buy;
-        if (buy !== undefined) {
+        if (buy.amount != "" && buy.currency != "") {
             addCryptoIfNew(buy.currency);
             if (cryptos[buy.currency] === undefined) {
                 // buying fiat
@@ -153,7 +236,7 @@ function cryptoCalculations() {
             }
         }
         const sell = transaction.sell;
-        if (sell !== undefined) {
+        if (sell.amount != "" && sell.currency != "") {
             addCryptoIfNew(sell.currency);
             if (cryptos[sell.currency] === undefined) {
                 // selling fiat
@@ -166,26 +249,11 @@ function cryptoCalculations() {
             }
         }
         const fee = transaction.fee;
-        if (fee !== undefined) {
+        if (fee.amount != "" && fee.currency != "") {
             addCryptoIfNew(fee.currency);
         }
-        const amount = transaction.amount;
-        if (amount !== undefined) {
-            addCryptoIfNew(amount.currency);
-        }
 
-        // if (type == "fiatTrade") {
-        //
-        // } else if (type == "trade") {
-        //
-        // } else if (type == "moveExchange") {
-        //
-        // } else if (type == "Fork") {
-        //
-        // } else if (type == "Gift / Tip") {
-        //
-        // }
-        if (type != "moveExchange") tradeCount++;
+        if (type != "deposit" && type != "withdrawal") tradeCount++;
     }
 
     loopObject(fiats, (fiats, fiat) => {

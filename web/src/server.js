@@ -18,7 +18,7 @@ app.use("/", express.static("static/favicon", { redirect: false }));
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
-app.use(bodyParser.json());
+app.use(bodyParser.json({ type: "application/json" }));
 
 // mongoose
 const mongoose = require("mongoose");

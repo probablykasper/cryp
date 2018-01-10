@@ -11,9 +11,9 @@ html
             a(href="/").header-logo Cryp
             .menu-bar
                 a(href="/").menu-bar-item Overview
-                a(href="/").menu-bar-item Transactions
-                a(href="/").menu-bar-item Balance
-                a(href="/").menu-bar-item Realized & Unrealized Gains
+                a(href="/transactions").menu-bar-item Transactions
+                a(href="/balance").menu-bar-item Balance
+                a(href="/gains").menu-bar-item Realized & Unrealized Gains
             if profilePictureURL
                 .account-icon
                     img.account-icon(src=profilePictureURL)
@@ -53,4 +53,6 @@ html
         script
             | const loggedIn = !{loggedIn};
             | const page = "!{page}";
+            if loggedIn && transactions
+                | let transactions = [!{transactions}];
         script(src="/global.js")
