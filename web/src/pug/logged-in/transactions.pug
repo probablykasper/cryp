@@ -5,7 +5,8 @@
     //-     .tooltip The combined value of all your coins
     //-     .card-container
     //-         .card-title Portfolio Value
-.transactions-table-card
+.page-card.transactions-table-card
+    .card-title Transactions
     .bg-button-row.transactions-table-buttons
         button.new New
         button.edit Edit
@@ -28,13 +29,12 @@
                 td.date Date
         tbody
 
-table
+table.sample-content.transactions-table-sample
     tbody
-    tr.transaction-row-sample
+    tr
         td.type
             select
                 option Trade
-                option Fiat Trade
                 option Deposit
                 option Withdrawal
                 option Fork / Gift

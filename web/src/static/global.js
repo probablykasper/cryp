@@ -72,8 +72,6 @@ $(document).ready(() => {
 
     if (page == "transactions") {
 
-
-
         resizeInputs($('table.transactions-table tbody td'));
         function resizeInputs($inputs) {
             // var $inputs = $('table.transactions-table tbody td');
@@ -120,8 +118,7 @@ $(document).ready(() => {
         }
 
         function addTransactionRow(transaction) {
-            const $newRow = $("tr.transaction-row-sample").clone();
-            $newRow.removeClass("transaction-row-sample");
+            const $newRow = $("table.transactions-table-sample tr").clone();
             if (transaction) { // else fields will be empty
                 $newRow.find("td.type select").val(transaction.type);
                 $newRow.find("td.buy-amount input").val(transaction.buy.amount);
@@ -134,7 +131,6 @@ $(document).ready(() => {
                 $newRow.find("td.group input").val(transaction.group);
                 $newRow.find("td.note input").val(transaction.note);
                 $newRow.find("td.date input").val(transaction.date);
-
             }
             $(".transactions-table-card tbody").append($newRow);
             resizeInputs($('table.transactions-table tbody td'));
@@ -189,6 +185,10 @@ $(document).ready(() => {
                 });
             });
         })();
+
+    }
+    else if (page == "balance") {
+        console.log(4);
     }
 })();
 

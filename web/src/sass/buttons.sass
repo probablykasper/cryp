@@ -1,0 +1,40 @@
+.bg-button-row
+    display: flex
+    flex-wrap: wrap
+    margin-bottom: 15px
+    justify-content: center
+    align-items: center
+    button
+        background-color: transparent
+        padding: 12px 22px
+        margin: 0px 20px
+        color: $black
+        cursor: pointer
+        font-size: 15px
+        display: flex
+
+        position: relative
+        &:focus::before
+            opacity: 1
+        &:active::after
+            opacity: 1
+        &::before
+            content: ""
+            transition: $transition-20 opacity
+            position: absolute
+            top: 0px
+            left: 0px
+            width: 100%
+            height: 100%
+            opacity: 0
+            box-shadow: $shadow-1
+        &::after
+            content: ""
+            transition: $transition-20 opacity
+            position: absolute
+            top: 0px
+            left: 0px
+            width: 100%
+            height: 100%
+            opacity: 0
+            box-shadow: $shadow-3
