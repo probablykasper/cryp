@@ -46,9 +46,16 @@ module.exports = (app) => {
 
     function get(path, pugFile, variables) {
         if (typeof variables === "undefined") variables = {};
+        let loggedOutPugFile;
+        if (typeof variables === "string") {
+            loggedOutPugFile = variables;
+            variables = {};
+        } else {
+            loggedOutPugFile = pugFile;
+        }
         app.get(path, (req, res) => {
-            function render(pugFilePrefix, callback) {
-                app.render(pugFilePrefix+pugFile, variables, (err, html) => {
+            function render(file, callback) {
+                app.render(file, variables, (err, html) => {
                     if (err) {
                         callback(err);
                     } else {
@@ -64,14 +71,14 @@ module.exports = (app) => {
                 variables.displayName = req.user.displayName;
                 variables.profilePictureURL = req.user.profilePictureURL;
                 variables.transactions = req.user.transactions;
-                render("logged-in/", (err) => {
+                render("logged-in/"+pugFile, (err) => {
                     logErr(1, err);
-                    render("logged-out/", (err) => {
+                    render("logged-out/"+loggedOutPugFile, (err) => {
                         logErr(2, err);
                     });
                 });
             } else {
-                render("logged-out/", (err) => {
+                render("logged-out/"+loggedOutPugFile, (err) => {
                     logErr(3, err);
                 });
             }
@@ -90,9 +97,10 @@ module.exports = (app) => {
         res.redirect("/");
     });
 
-    get("/", "home");
+    get("/", "overview", "home");
 
     get("/balance", "balance");
+    get("/gains", "gains");
 
     get("/transactions", "transactions");
     app.post("/update-transactions", (req, res) => {

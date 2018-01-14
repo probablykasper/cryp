@@ -65,25 +65,34 @@
 
 
 
-
+.page-card-container
+    display: grid
 .page-card
+    // min-width: 0px
     .bg-button-row
         button
             margin: 0px 5px
         button.save
             margin-left: auto
     table
-        width: 100%
-        text-align: left
         thead
-            td
-                width: 1px
-                font-size: 15px
-                padding: 0px 10px
-                font-weight: 500
+            tr
+                td
+                    font-weight: 500
+                    font-size: 15px
+                    width: 1px
+                    padding: 0px 10px
         tbody
             tr
                 border-bottom: 1px solid #F2F2F2
+        td
+            font-size: 13px
+            &.amount
+                text-align: right
+    table.transactions-table
+        width: 100%
+        text-align: left
+        tbody
             select
                 height: 26px
                 background-color: #eff3f5
@@ -112,10 +121,24 @@
         td.amount
             width: 1%
             min-width: 60px
-            text-align: right
             input
                 text-align: right
                 &:focus
                     text-align: left
         td.cur input, thead td.cur
             width: 1%
+    .crypto-info
+        display: flex
+        .chart-container
+            margin-top: calc(15px + 12px*2)
+            width: 0px
+            flex-grow: 1
+            min-width: 200px
+        .crypto-info-table
+            white-space: nowrap
+            td
+                padding: 13px 10px
+                &.crypto-amount
+                    padding-right: 0px
+                &.cur
+                    padding-left: 0px
