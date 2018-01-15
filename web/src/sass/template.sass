@@ -1,0 +1,76 @@
+html
+    font-family: "Rubik", sans-serif
+body
+    background-color: #EEF5F9
+    display: grid
+.sample-content
+    display: none
+main.page-container
+    margin: 30px
+
+header.site-header
+    height: $header-height
+    background-color: #16C19D
+    display: flex
+    align-items: center
+    justify-content: space-between
+    padding: 0px 30px
+    box-shadow: $shadow-1
+    min-width: 300px
+    a.header-logo
+        color: #FFFFFF
+        font-size: 38px
+        padding: 8px
+    .menu-bar
+        height: 100%
+        line-height: $header-height
+        overflow-x: auto
+        overflow-y: hidden
+        white-space: nowrap
+        a.menu-bar-item
+            color: #FFFFFF
+            padding: 4px 4px
+            font-size: 16px
+            margin: 0px 15px
+            &:hover
+                border-bottom: 3px solid #FFFFFF
+    .account-icon
+        max-height: 100%
+        position: relative
+        img.account-icon
+            margin: 10px 0px
+            cursor: pointer
+        .account-box
+            z-index: 5
+            background-color: #FFFFFF
+            box-shadow: $shadow-4
+            position: absolute
+            right: 0px
+            top: calc(100% - 8px)
+            overflow: hidden
+
+            height: 0px
+            width: 100px
+            pointer-events: none
+            transform-origin: right top
+            transition: $transition-20-out all
+            &.visible
+                height: 120px
+                width: 200px
+                pointer-events: all
+                transition: $transition-30-in all
+            .spacer
+                height: 10px
+            a.account-box-item
+                height: 50px
+                display: flex
+                align-items: center
+                padding: 0px 18px
+                flex-grow: 1
+                cursor: pointer
+                .item-text
+                    margin-left: 4px
+                    font-size: 15px
+                    color: $black
+                &:hover
+                    background-color: #F2F2F2

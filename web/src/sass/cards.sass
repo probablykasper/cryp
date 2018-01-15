@@ -1,0 +1,147 @@
+.card, .page-card
+    padding: 28px
+    background-color: #FFFFFF
+    box-shadow: $shadow-1
+    .card-title
+        text-align: center
+        font-weight: 500
+        margin-bottom: 6px
+        padding: 0px 5px
+.page-card .card-title
+    text-align: left
+    font-size: 18px
+
+
+
+
+.cards-area
+    display: grid
+    &.overview
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr))
+    grid-gap: 24px
+    .card
+        position: relative
+        .tooltip
+            position: absolute
+            width: 200px
+            top: 18px
+            left: 50%
+            padding: 5px 12px
+            border-radius: 4px
+            color: $white
+            background-color: $tooltip-bg
+            font-size: 14px
+            pointer-events: none
+            text-align: center
+            box-shadow: $shadow-1
+
+            opacity: 0
+            transform: translate(-50%, -100%) scale(0)
+            transition: $transition-10-out all
+            &.visible
+                opacity: 1
+                transform: translate(-50%, -100%) scale(1)
+                transition: $transition-10-in all
+            &::after
+                content: ""
+                position: absolute
+                left: 50%
+                transform: translateX(-50%)
+                bottom: -6px
+                width: 0px
+                height: 0px
+                border-left: 7px solid transparent
+                border-top: 7px solid $tooltip-bg
+                border-right: 7px solid transparent
+        .card-container
+        p
+            font-size: 22px
+            text-align: center
+        &.green p
+            color: $green
+        &.red p
+            color: $red
+
+
+
+
+.page-card-container
+    display: grid
+.page-card
+    // min-width: 0px
+    .bg-button-row
+        button
+            margin: 0px 5px
+        button.save
+            margin-left: auto
+    table
+        thead
+            tr
+                td
+                    font-weight: 500
+                    font-size: 15px
+                    width: 1px
+                    padding: 0px 10px
+        tbody
+            tr
+                border-bottom: 1px solid #F2F2F2
+        td
+            font-size: 13px
+            &.amount
+                text-align: right
+    table.transactions-table
+        width: 100%
+        text-align: left
+        tbody
+            select
+                height: 26px
+                background-color: #eff3f5
+                font-size: 13px
+                &:focus
+                    background-color: #d9e3e7
+            input, span
+                font-size: 13px
+                white-space: nowrap
+            input
+                display: table-cell
+                padding: 12px 10px
+                // take up the whole cell:
+                min-width: calc(100% - 20px)
+                // actual min-width:
+                width: 50px
+                white-space: nowrap
+                border-top: 1px solid transparent
+                border-bottom: 1px solid transparent
+                &:focus
+                    border-bottom: 1px solid #3F3F3F
+        td.type
+            width: 1%
+            select
+                min-width: 95px
+        td.amount
+            width: 1%
+            min-width: 60px
+            input
+                text-align: right
+                &:focus
+                    text-align: left
+        td.cur input, thead td.cur
+            width: 1%
+        td.date input
+            font-family: "Roboto"
+            width: 65px
+    .crypto-info
+        display: flex
+        .chart-container
+            margin-top: calc(15px + 12px*2)
+            width: 0px
+            flex-grow: 1
+            min-width: 200px
+        .crypto-info-table
+            white-space: nowrap
+            td
+                padding: 13px 10px
+                &.crypto-amount
+                    padding-right: 0px
+                &.cur
+                    padding-left: 0px

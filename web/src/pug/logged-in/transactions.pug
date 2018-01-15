@@ -1,0 +1,70 @@
+.bg-button-row.overview-page
+    button.import Import
+    button.api-connections API Connections
+    //- .card.tooltip-area.portfolio-value
+    //-     .tooltip The combined value of all your coins
+    //-     .card-container
+    //-         .card-title Portfolio Value
+.page-card.transactions-table-card
+    .card-title Transactions
+    .bg-button-row.transactions-table-buttons
+        button.new New
+        button.edit Edit
+        button.duplicate Duplicate
+        button.delete Delete
+        button.save Save
+    table.transactions-table
+        thead
+            tr
+                td.type Type
+                td.amount.buy-amount Buy
+                td.cur.buy-currency Cur.
+                td.amount.sell-amount Sell
+                td.cur.sell-currency Cur.
+                td.amount.fee-amount fee
+                td.cur.fee-currency Cur.
+                td.exchange Exchange
+                td.group Group
+                td.note Note
+                td.date Date
+        tbody
+
+table.sample-content.transactions-table-sample
+    tbody
+        tr
+            td.type
+                select
+                    option Trade
+                    option Deposit
+                    option Withdrawal
+                    option Fork / Gift
+            td.amount.buy-amount
+                input
+                span(style="display:none")
+            td.cur.buy-currency
+                input
+                span(style="display:none")
+            td.amount.sell-amount
+                input
+                span(style="display:none")
+            td.cur.sell-currency
+                input
+                span(style="display:none")
+            td.amount.fee-amount
+                input
+                span(style="display:none")
+            td.cur.fee-currency
+                input
+                span(style="display:none")
+            td.exchange
+                input
+                span(style="display:none")
+            td.group
+                input
+                span(style="display:none")
+            td.note
+                input
+                span(style="display:none")
+            td.date
+                input
+                span(style="display:none")
