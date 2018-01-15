@@ -103,6 +103,7 @@ module.exports = (app) => {
     get("/gains", "gains");
 
     get("/transactions", "transactions");
+
     app.post("/update-transactions", (req, res) => {
         if (typeof req.body == "object") {
             User.findOneAndUpdate({

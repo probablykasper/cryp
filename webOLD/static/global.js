@@ -83,7 +83,7 @@ window.cryp = {
 
     if (page == "transactions") {
 
-        resizeInputs($('table.transactions-table tbody td'));
+        resizeInputs($("table.transactions-table tbody td:not(.date) td"));
         function resizeInputs($inputs) {
             // var $inputs = $('table.transactions-table tbody td');
 
@@ -144,7 +144,7 @@ window.cryp = {
                 $newRow.find("td.date input").val(transaction.date);
             }
             $(".transactions-table-card tbody").append($newRow);
-            resizeInputs($('table.transactions-table tbody td'));
+            resizeInputs($('table.transactions-table tbody td:not(.date)'));
         }
         for (let i = 0; i < transactions.length; i++) {
             addTransactionRow(transactions[i]);
