@@ -1,3 +1,2 @@
-const x = (one) => {
-    return one+1;
-}
+require("./big.min.js");
+require("./Chart.bundle.min.js");

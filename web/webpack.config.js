@@ -1,52 +1,51 @@
 const path = require("path");
 const webpack = require("webpack");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const extractSass = new ExtractTextPlugin({
-    filename: "[name].[contenthash].sass",
-    disable: process.env.CRYP_ENV === "dev"
-});
+
+let ifDev = false;
+let ifProduction = true;
+if (process.env.CRYP_ENV == "dev") {
+    ifDev = true;
+    ifProduction = false;
+}
 
 module.exports = [
     {
-        entry: "./src/js/global.js",
         context: path.resolve(__dirname),
+        entry: "./src/js/global.js",
         output: {
             filename: "static/global.js",
-            path: path.resolve(__dirname, "dist")
+            path: path.resolve(__dirname, "src")
         },
         module: {
             loaders: [{
                 test: /\.js$/,
                 loader: "babel-loader",
-                exclude: "/node_modules",
                 query: {
-                    presets: ["es2015"]
+                    presets: ["env"]
                 }
             }]
         },
-        plugins: [
-            new webpack.optimize.UglifyJsPlugin({
-                compress: {
-                    warnings: false,
-                    drop_console: false,
-                }
-            }),
-            new CopyWebpackPlugin([
-                { from: "./src/modules", to: "modules", },
-                { from: "./src/pug", to: "pug", },
-                { from: "./src/static", to: "static", },
-                { from: "./src/server.js", to: "server.js", }
-            ])
-        ]
+        plugins: (() => {
+            let arr = [];
+            if (ifProduction) {
+                arr.push(
+                    new webpack.optimize.UglifyJsPlugin({
+                        compress: {
+                            warnings: false,
+                            drop_console: false,
+                        }
+                    })
+                );
+            }
+        })()
     },
     {
-        entry: "./src/sass/global.sass",
         context: path.resolve(__dirname),
+        entry: "./src/sass/global.sass",
         output: {
             filename: "sass.js",
-            path: path.resolve(__dirname, "dist")
+            path: path.resolve(__dirname, "src")
         },
         module: {
             rules: [{
@@ -56,7 +55,7 @@ module.exports = [
                         {
                             loader: "css-loader",
                             options: {
-                                minimize: true
+                                minimize: ifProduction
                             }
                         },
                         {
@@ -68,7 +67,7 @@ module.exports = [
         },
         plugins: [
             new ExtractTextPlugin({
-                filename: "static/global.css"
+                filename: "static/global.sass"
             })
         ]
     }

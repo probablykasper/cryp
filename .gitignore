@@ -1,4 +1,3 @@
 ferrum
-web/src/modules/keys.js
-web/dist/modules/keys.js
+**/keys.js
 db/db
