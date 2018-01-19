@@ -1,2 +1,5 @@
-require("./big.min.js");
-require("./Chart.bundle.min.js");
+// http://mikemcl.github.io/big.js/
+"use strict";
+$(document).ready(() => {
+    require("./calculate");
+});

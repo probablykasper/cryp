@@ -5,15 +5,16 @@ services:
         container_name: web
         ports:
             - 80:80
+            - 443:443
         volumes:
             - ./web:/usr/src/app
         links:
             - db
         environment:
-            - "ENV=production"
-            - "PROD_URL=http://cryp.kasp.io"
-
             - "CRYP_ENV=dev"
+            - "CRYP_INSECURE_PORT=80"
+            - "CRYP_SECURE_PORT=443"
+
     mongo-express:
         image: mongo-express:0.42
         ports:
@@ -25,6 +26,7 @@ services:
             - "ME_CONFIG_MONGODB_SERVER=db"
             - "ME_CONFIG_BASICAUTH_USERNAME=user"
             - "ME_CONFIG_BASICAUTH_PASSWORD=fairly long password"
+
     db:
         image: mongo:3.6
         ports:
@@ -32,3 +34,23 @@ services:
         volumes:
             - ./db/db:/data/db
         restart: always
+
+    zerossl:
+        image: zerossl/client:latest
+        depends_on:
+            - web
+        # command: -help
+        command: -domains "cryp.kasp.io" -email "kh@kasp.io" -unlink -generate-missing -path /webroot -renew 30 -key account.key -crt domain.crt -csr domain.csr -csr-key domain.key
+        # -live                 production
+        # -unlink               remove challenge files automatically
+        # -generate-missing     generate missing files (key, csr, csr-key)
+        # -email
+        # -path                 path to .well-known/acme-challenge/
+        # -renew <days>         renew if less than x days till expiration
+
+        volumes:
+            - ./web/src/tls:/data
+            - ./web/src/static/.well-known/acme-challenge:/webroot
+
+            
+# docker run --rm -v $(pwd)/mybashscript.sh:/mybashscript.sh ubuntu bash /mybashscript.sh
