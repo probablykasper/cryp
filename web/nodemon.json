@@ -1,7 +1,7 @@
 {
     "watch": [
-        "src/server.js",
-        "src/node"
+        "server.js",
+        "node"
     ],
     "ext": "js"
 }

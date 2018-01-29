@@ -1,6 +1,10 @@
 "use strict";
 const passport = require("passport");
-const logErr = require("./common").logErr;
+const logErr = (err) => {
+        console.log("---------- error code "+code);
+        console.log(err);
+        console.log("----------");
+};
 const scope = {scope: ["profile"]};
 const User = require("./mongoose-models").User;
 

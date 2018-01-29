@@ -12,4 +12,4 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-CMD npm run $CRYP_ENV
+CMD npm ${CRYP_ENV}

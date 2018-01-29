@@ -1,36 +1,34 @@
 "use strict";
-// native modules
-const path = require("path");
-// dir function
+const express = require("express");
+const http = require("http");
+const https = require("https");
+const fs = require("fs");
 global.dir = (dirPath) => {
     return require("path").resolve(__dirname, dirPath);
 }
 
-// config
-const keyPath = dir("tls/domain.key");
-const certPath = dir("tls/domain.crt");
-const insecurePort = process.env.CRYP_INSECURE_PORT;
-const securePort = process.env.CRYP_SECURE_PORT;
+const PORT_INSECURE = process.env.PORT_INSECURE;
+const PORT_SECURE = process.env.PORT_SECURE;
 
-const tempServer = require("./node/temp-server");
-tempServer.start(insecurePort);
+// http
+(() => {
+    const httpApp = express();
+    httpApp.get("/", function (req, res) {
+        console.log("user http");
+        res.send("You found the HTTP server");
+    });
+    http.createServer(httpApp).listen(80, () => {
+        console.log("httpApp listening on port "+80);
+    });
+})();
 
-const getCerts = require("./node/get-certs");
-getCerts(keyPath, certPath, () => {
+// https
+(() => {
 
-    tempServer.close();
-
-    // httpsRedirectServer
-    const httpsRedirectServer = require("./node/https-redirect-server");
-    httpsRedirectServer.start(insecurePort, securePort);
-
-
-
-    const express = require("express");
+    // https
     const app = express();
 
     // load view engine
-    // app.set("views", require("path").resolve(__dirname, "pug"));
     app.set("views", dir("pug"));
     app.set("view engine", "pug");
 
@@ -38,16 +36,11 @@ getCerts(keyPath, certPath, () => {
     app.use("/", express.static(dir("static"), { redirect: false }));
     app.use("/", express.static(dir("static/favicon"), { redirect: false }));
 
+    const bodyParser = require("body-parser");
     // parse application/x-www-form-urlencoded
     app.use(bodyParser.urlencoded({ extended: false }));
     // parse application/json
     app.use(bodyParser.json({ type: "application/json" }));
-
-    // start server
-    httpsOptions = {
-        key: fs.readFileSync(keyPath),
-        cert: fs.readFileSync(certPath)
-    };
 
     // mongoose
     const mongoose = require("mongoose");
@@ -81,8 +74,12 @@ getCerts(keyPath, certPath, () => {
     // routes
     require("./node/routes")(app);
 
-    https.createServer(httpsOptions, app).listen(securePort, () => {
-        console.log("https server started");
+    const httpsOptions = {
+        key: fs.readFileSync(dir(`letsencrypt/etc/letsencrypt/live/${process.env.CERT_DOMAIN}/privkey.pem`)),
+        cert: fs.readFileSync(dir(`letsencrypt/etc/letsencrypt/live/${process.env.CERT_DOMAIN}/cert.pem`))
+    };
+    https.createServer(httpsOptions, app).listen(443, () => {
+        console.log("app listening on port "+443);
     });
 
-});
+})();
