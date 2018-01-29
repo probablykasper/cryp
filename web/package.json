@@ -25,6 +25,7 @@
         "babel-preset-env": "1.6.x",
 
         "express": "4.16.x",
+        "redirect-https": "1.1.x",
         "pug": "~2.0.0-rc.4",
         "body-parser": "1.18.x",
 

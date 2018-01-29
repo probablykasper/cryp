@@ -1,7 +1,5 @@
 "use strict";
 const express = require("express");
-const http = require("http");
-const https = require("https");
 const fs = require("fs");
 global.dir = (dirPath) => {
     return require("path").resolve(__dirname, dirPath);
@@ -12,20 +10,39 @@ const PORT_SECURE = process.env.PORT_SECURE;
 
 // http
 (() => {
-    const httpApp = express();
-    httpApp.get("/", function (req, res) {
-        console.log("user http");
-        res.send("You found the HTTP server");
-    });
-    http.createServer(httpApp).listen(80, () => {
-        console.log("httpApp listening on port "+80);
-    });
+
+    const http = require("http");
+    const server = http.createServer();
+
+    server.on("request", require("redirect-https")({
+        port: PORT_SECURE,
+        body: "<!-- Please use HTTPS instead. That's a \"you don't have a choice\", not a \"please\". -->"
+    }));
+
+    server.listen(PORT_INSECURE, () => {
+        console.log();
+    })
+
+    // const httpApp = express();
+    //
+    // httpApp.use("/", require("redirect-https"))({
+    //     body: "<!-- Please use HTTPS instead. That's a \"you don't have a choice\", not a \"please\". -->"
+    // });
+    //
+    // httpApp.get("/", function (req, res) {
+    //     console.log("user http");
+    //     res.send("You found the HTTP server");
+    // });
+    //
+    // require("http").createServer(httpApp).listen(80, () => {
+    //     console.log("httpApp listening on port "+80);
+    // });
+
 })();
 
 // https
 (() => {
 
-    // https
     const app = express();
 
     // load view engine
@@ -78,7 +95,7 @@ const PORT_SECURE = process.env.PORT_SECURE;
         key: fs.readFileSync(dir(`letsencrypt/etc/letsencrypt/live/${process.env.CERT_DOMAIN}/privkey.pem`)),
         cert: fs.readFileSync(dir(`letsencrypt/etc/letsencrypt/live/${process.env.CERT_DOMAIN}/cert.pem`))
     };
-    https.createServer(httpsOptions, app).listen(443, () => {
+    require("https").createServer(httpsOptions, app).listen(443, () => {
         console.log("app listening on port "+443);
     });
 

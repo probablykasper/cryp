@@ -37,6 +37,7 @@ services:
         restart: always
 
     letsencrypt-init:
+        # https://stackoverflow.com/questions/39846649/how-to-use-lets-encrypt-with-docker-container-based-on-the-node-js-image
         image: certbot/certbot:v0.21.1
         env_file:
             - .env

@@ -12,10 +12,10 @@ if (process.env.CRYP_ENV == "dev") {
 module.exports = [
     {
         context: path.resolve(__dirname),
-        entry: "./src/js/global.js",
+        entry: "./js/global.js",
         output: {
-            filename: "static/global.js",
-            path: path.resolve(__dirname, "src")
+            filename: "global.js",
+            path: path.resolve(__dirname, "static")
         },
         module: {
             loaders: [{
@@ -42,10 +42,10 @@ module.exports = [
     },
     {
         context: path.resolve(__dirname),
-        entry: "./src/sass/global.sass",
+        entry: "./sass/global.sass",
         output: {
             filename: "sass.js",
-            path: path.resolve(__dirname, "src")
+            path: path.resolve(__dirname, "static")
         },
         module: {
             rules: [{
@@ -67,7 +67,7 @@ module.exports = [
         },
         plugins: [
             new ExtractTextPlugin({
-                filename: "static/global.sass"
+                filename: "global.sass"
             })
         ]
     }
