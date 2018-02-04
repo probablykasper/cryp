@@ -1,18 +1,12 @@
-$(document).ready(() => {
-
-
-
-// http://mikemcl.github.io/big.js/
-"use strict";
-window.cryp = {
-    cryptoTickers: [],
-    cryptoTickers: [],
-    cryptoTickersString: "",
-    cryptoBalances: [],
-    cryptoBalancesPrimary: [],
-    portfolioValue: new Big("0"),
-    primaryCurrency: "NOK"
-};
+// window.cryp = {
+//     cryptoTickers: [],
+//     cryptoTickers: [],
+//     cryptoTickersString: "",
+//     cryptoBalances: [],
+//     cryptoBalancesPrimary: [],
+//     portfolioValue: new Big("0"),
+//     primaryCurrency: "NOK"
+// };
 
 // (function commonFunctions() {
 //     window.loopObject = (object, callback) => {
@@ -204,193 +198,186 @@ window.cryp = {
 //
 // })();
 
-if (loggedIn) cryptoCalculations();
-function cryptoCalculations() {
-    let fiats = {
-        NOK: {
-            invested: new Big("0"),
-            hedged: new Big("0")
-        },
-        EUR: {
-            invested: new Big("0"),
-            hedged: new Big("0")
-        }
-    };
-    let cryptos = {};
-    function addCryptoIfNew(crypto) {
-        if (fiats[crypto] === undefined) {
-            if (cryptos[crypto] === undefined) {
-                cryptos[crypto] = {
-                    balance: new Big("0"),
-                    ticker: crypto
-                };
-            }
-        }
+                    // let fiats = {
+                    //     NOK: {
+                    //         invested: new Big("0"),
+                    //         hedged: new Big("0")
+                    //     },
+                    //     EUR: {
+                    //         invested: new Big("0"),
+                    //         hedged: new Big("0")
+                    //     }
+                    // };
+                    // let cryptos = {};
+                    // function addCryptoIfNew(crypto) {
+                    //     if (fiats[crypto] === undefined) {
+                    //         if (cryptos[crypto] === undefined) {
+                    //             cryptos[crypto] = {
+                    //                 balance: new Big("0"),
+                    //                 ticker: crypto
+                    //             };
+                    //         }
+                    //     }
+                    // }
+                    // let tradeCount = 0;
+                    // for (let i = 0; i < transactions.length; i++) {
+                    //
+                    //     const transaction = transactions[i];
+                    //     const type = transaction.type;
+                    //
+                    //     const buy = transaction.buy;
+                    //     if (buy.amount != "" && buy.currency != "") {
+                    //         addCryptoIfNew(buy.currency);
+                    //         if (cryptos[buy.currency] === undefined) {
+                    //             // buying fiat
+                    //             const hedged = fiats[buy.currency].hedged;
+                    //             fiats[buy.currency].hedged = hedged.plus(buy.amount);
+                    //         } else {
+                    //             // buying crypto
+                    //             const balance = cryptos[buy.currency].balance;
+                    //             cryptos[buy.currency].balance = balance.plus(buy.amount);
+                    //         }
+                    //     }
+                    //     const sell = transaction.sell;
+                    //     if (sell.amount != "" && sell.currency != "") {
+                    //         addCryptoIfNew(sell.currency);
+                    //         if (cryptos[sell.currency] === undefined) {
+                    //             // selling fiat
+                    //             const invested = fiats[sell.currency].invested;
+                    //             fiats[sell.currency].invested = invested.plus(sell.amount);
+                    //         } else {
+                    //             // selling crypto
+                    //             const balance = cryptos[sell.currency].balance;
+                    //             cryptos[sell.currency].balance = balance.minus(sell.amount);
+                    //         }
+                    //     }
+                    //     const fee = transaction.fee;
+                    //     if (fee.amount != "" && fee.currency != "") {
+                    //         addCryptoIfNew(fee.currency);
+                    //     }
+                    //
+                    //     if (type != "deposit" && type != "withdrawal") tradeCount++;
+                    // }
+
+                // loopObject(fiats, (fiats, fiat) => {
+                //     // fiats[fiat].invested = fiats[fiat].invested.toString();
+                //     if (
+                //         (page == "home" && fiats[fiat].invested > 0)
+                //         || fiat == cryp.primaryCurrency
+                //     ) {
+                //         $(".total-fiat-invested .card-container")
+                //             .append(`<p>${fiats[fiat].invested} ${fiat}</p>`);
+                //         $(".total-fiat-hedged .card-container")
+                //             .append(`<p>${fiats[fiat].hedged} ${fiat}</p>`);
+                //     }
+                // });
+                // $(".total-trades .card-container")
+                //     .append(`<p>${tradeCount}</p>`);
+
+                    // loopObject(cryptos, (cryptos, crypto) => {
+                    //     // cryptos[crypto].balance = cryptos[crypto].balance.toString();
+                    //     cryp.cryptoTickers.push(crypto);
+                    //     cryp.cryptoTickersString += crypto+",";
+                    //     cryp.cryptoBalances.push(cryptos[crypto].balance);
+                    // });
+                    // // cut off last , from cryptoTickersString
+                    // if (cryp.cryptoTickersString.endsWith(",")) {
+                    //     cryp.cryptoTickersString = cryp.cryptoTickersString.slice(0,-1);
+                    // }
+
+const getReq = `fsyms=${cryp.cryptoTickersString}&tsyms=${cryp.primaryCurrency}`;
+const url = "https://min-api.cryptocompare.com/data/pricemulti?"+getReq;
+xhr(null, url, (res) => {
+    function addBalanceRow(amount, cryptocurrency, value) {
+        const $newRow = $("table.balance-table-sample tr").clone();
+        $newRow.find("td.crypto-amount").text(amount.toFixed(8));
+        $newRow.find("td.cur").html("&nbsp;"+cryptocurrency);
+        $newRow.find("td.value").text(value.toFixed(2));
+        $("table.crypto-info-table tbody").append($newRow);
     }
-    let tradeCount = 0;
-    for (let i = 0; i < transactions.length; i++) {
-
-        const transaction = transactions[i];
-        const type = transaction.type;
-
-        const buy = transaction.buy;
-        if (buy.amount != "" && buy.currency != "") {
-            addCryptoIfNew(buy.currency);
-            if (cryptos[buy.currency] === undefined) {
-                // buying fiat
-                const hedged = fiats[buy.currency].hedged;
-                fiats[buy.currency].hedged = hedged.plus(buy.amount);
-            } else {
-                // buying crypto
-                const balance = cryptos[buy.currency].balance;
-                cryptos[buy.currency].balance = balance.plus(buy.amount);
-            }
-        }
-        const sell = transaction.sell;
-        if (sell.amount != "" && sell.currency != "") {
-            addCryptoIfNew(sell.currency);
-            if (cryptos[sell.currency] === undefined) {
-                // selling fiat
-                const invested = fiats[sell.currency].invested;
-                fiats[sell.currency].invested = invested.plus(sell.amount);
-            } else {
-                // selling crypto
-                const balance = cryptos[sell.currency].balance;
-                cryptos[sell.currency].balance = balance.minus(sell.amount);
-            }
-        }
-        const fee = transaction.fee;
-        if (fee.amount != "" && fee.currency != "") {
-            addCryptoIfNew(fee.currency);
-        }
-
-        if (type != "deposit" && type != "withdrawal") tradeCount++;
-    }
-
-    loopObject(fiats, (fiats, fiat) => {
-        // fiats[fiat].invested = fiats[fiat].invested.toString();
-        if (
-            (page == "home" && fiats[fiat].invested > 0)
-            || fiat == cryp.primaryCurrency
-        ) {
-            $(".total-fiat-invested .card-container")
-                .append(`<p>${fiats[fiat].invested} ${fiat}</p>`);
-            $(".total-fiat-hedged .card-container")
-                .append(`<p>${fiats[fiat].hedged} ${fiat}</p>`);
-        }
-    });
-    $(".total-trades .card-container")
-        .append(`<p>${tradeCount}</p>`);
-
     loopObject(cryptos, (cryptos, crypto) => {
-        // cryptos[crypto].balance = cryptos[crypto].balance.toString();
-        cryp.cryptoTickers.push(crypto);
-        cryp.cryptoTickersString += crypto+",";
-        cryp.cryptoBalances.push(cryptos[crypto].balance);
-    });
-    // cut off last , from cryptoTickersString
-    if (cryp.cryptoTickersString.endsWith(",")) {
-        cryp.cryptoTickersString = cryp.cryptoTickersString.slice(0,-1);
-    }
-
-    const getReq = `fsyms=${cryp.cryptoTickersString}&tsyms=${cryp.primaryCurrency}`;
-    const url = "https://min-api.cryptocompare.com/data/pricemulti?"+getReq;
-    xhr(null, url, (res) => {
-        function addBalanceRow(amount, cryptocurrency, value) {
-            const $newRow = $("table.balance-table-sample tr").clone();
-            $newRow.find("td.crypto-amount").text(amount.toFixed(8));
-            $newRow.find("td.cur").html("&nbsp;"+cryptocurrency);
-            $newRow.find("td.value").text(value.toFixed(2));
-            $("table.crypto-info-table tbody").append($newRow);
+        const cryptoValue = cryptos[crypto].balance.times(res[crypto][cryp.primaryCurrency]);
+        cryp.cryptoBalancesPrimary.push(cryptoValue);
+        cryp.portfolioValue = cryp.portfolioValue.plus(cryptoValue);
+        if (page == "balance") {
+            $("table.crypto-info-table thead td.value")
+                .text("Value in "+cryp.primaryCurrency);
+            addBalanceRow(cryptos[crypto].balance, crypto, cryptoValue);
         }
-        loopObject(cryptos, (cryptos, crypto) => {
-            const cryptoValue = cryptos[crypto].balance.times(res[crypto][cryp.primaryCurrency]);
-            cryp.cryptoBalancesPrimary.push(cryptoValue);
-            cryp.portfolioValue = cryp.portfolioValue.plus(cryptoValue);
-            if (page == "balance") {
-                $("table.crypto-info-table thead td.value")
-                    .text("Value in "+cryp.primaryCurrency);
-                addBalanceRow(cryptos[crypto].balance, crypto, cryptoValue);
+    });
+    if (page == "overview") {
+        $(".portfolio-value .card-container")
+            .append(`<p>${cryp.portfolioValue} ${cryp.primaryCurrency}</p>`);
+    }
+    if (page == "balance") {
+        const ctx = $("canvas#balance");
+        Chart.defaults.global.defaultFontFamily = '"Rubik", sans-serif';
+
+        const balanceChart = new Chart(ctx, {
+            type: "horizontalBar",
+            data: {
+                labels: cryp.cryptoTickers,
+                datasets: [{
+                    label: "Value in "+cryp.primaryCurrency,
+                    data: cryp.cryptoBalancesPrimary,
+                    // backgroundColor: [
+                    //     'rgba(255, 99, 132, 0.4)',
+                    //     'rgba(54, 162, 235, 0.4)',
+                    //     'rgba(255, 206, 86, 0.4)',
+                    //     'rgba(75, 192, 192, 0.4)',
+                    //     'rgba(153, 102, 255, 0.4)',
+                    //     'rgba(255, 159, 64, 0.4)'
+                    // ],
+                    backgroundColor: "#16C19D",
+                    // borderColor: [
+                    //     'rgba(255,99,132,1)',
+                    //     'rgba(54, 162, 235, 1)',
+                    //     'rgba(255, 206, 86, 1)',
+                    //     'rgba(75, 192, 192, 1)',
+                    //     'rgba(153, 102, 255, 1)',
+                    //     'rgba(255, 159, 64, 1)'
+                    // ],
+                    borderWidth: 0
+                }],
+            },
+            options: {
+                legend: {
+                    display: false,
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                        gridLines: {
+                            display: false,
+                        },
+                        // barPercentage: 1,
+                        // categoryPercentage: 1,
+                        maxBarThickness: 20,
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                    }],
+                }
             }
         });
-        if (page == "overview") {
-            $(".portfolio-value .card-container")
-                .append(`<p>${cryp.portfolioValue} ${cryp.primaryCurrency}</p>`);
-        }
-        if (page == "balance") {
-            const ctx = $("canvas#balance");
-            Chart.defaults.global.defaultFontFamily = '"Rubik", sans-serif';
-
-            const balanceChart = new Chart(ctx, {
-                type: "horizontalBar",
-                data: {
-                    labels: cryp.cryptoTickers,
-                    datasets: [{
-                        label: "Value in "+cryp.primaryCurrency,
-                        data: cryp.cryptoBalancesPrimary,
-                        // backgroundColor: [
-                        //     'rgba(255, 99, 132, 0.4)',
-                        //     'rgba(54, 162, 235, 0.4)',
-                        //     'rgba(255, 206, 86, 0.4)',
-                        //     'rgba(75, 192, 192, 0.4)',
-                        //     'rgba(153, 102, 255, 0.4)',
-                        //     'rgba(255, 159, 64, 0.4)'
-                        // ],
-                        backgroundColor: "#16C19D",
-                        // borderColor: [
-                        //     'rgba(255,99,132,1)',
-                        //     'rgba(54, 162, 235, 1)',
-                        //     'rgba(255, 206, 86, 1)',
-                        //     'rgba(75, 192, 192, 1)',
-                        //     'rgba(153, 102, 255, 1)',
-                        //     'rgba(255, 159, 64, 1)'
-                        // ],
-                        borderWidth: 0
-                    }],
-                },
-                options: {
-                    legend: {
-                        display: false,
-                    },
-                    layout: {
-                        padding: {
-                            left: 0,
-                            right: 0,
-                            top: 0,
-                            bottom: 0,
-                        }
-                    },
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true,
-                            },
-                            gridLines: {
-                                display: false,
-                            },
-                            // barPercentage: 1,
-                            // categoryPercentage: 1,
-                            maxBarThickness: 20,
-                        }],
-                        xAxes: [{
-                            ticks: {
-                                beginAtZero: true,
-                            },
-                        }],
-                    }
-                }
-            });
-        }
-    }, {type: "GET"});
+    }
+}, {type: "GET"});
 
 
-    console.log(fiats);
-    console.log(cryptos);
-    console.log(cryp);
-}
-
-
-
-});
+console.log(fiats);
+console.log(cryptos);
+console.log(cryp);

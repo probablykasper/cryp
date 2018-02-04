@@ -1,9 +1,12 @@
 window.loopObject = (object, callback) => {
+    let i = 0;
     for (let key in object) {
         // skip loop if the property is from prototype
         if (!object.hasOwnProperty(key)) continue;
 
-        callback(object, key);
+        // callback(object, key);
+        callback(key, i);
+        i++;
     }
 }
 

@@ -44,7 +44,7 @@ module.exports = [
         context: path.resolve(__dirname),
         entry: "./sass/global.sass",
         output: {
-            filename: "sass.js",
+            filename: "sass.webpack.js",
             path: path.resolve(__dirname, "static")
         },
         module: {
@@ -67,7 +67,7 @@ module.exports = [
         },
         plugins: [
             new ExtractTextPlugin({
-                filename: "global.sass"
+                filename: "global.css"
             })
         ]
     }
