@@ -78,7 +78,7 @@ if (page == "overview") {
         $("table.crypto-info-table tbody").append($newRow);
     }
     loopObject(cryp.cryptos, (crypto) => {
-        addBalanceRow(cryp.cryptos[crypto].balance, crypto, cryptoValue);
+        addBalanceRow(cryp.cryptos[crypto].balance, crypto, cryp.cryptos[crypto].valueInPrimaryCurrency);
     });
 
 } else if (page == "gains") {

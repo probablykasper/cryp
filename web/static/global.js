@@ -99,11 +99,10 @@ $(document).ready(function () {
     if (loggedIn) {
         __webpack_require__(3);
         __webpack_require__(4).fetched(function (res) {
-            __webpack_require__(6).calculate(res);
-            __webpack_require__(5);
+            __webpack_require__(5).calculate(res);
+            __webpack_require__(6);
         });
     }
-    // require("./old_global");
 
     console.log(cryp);
 });
@@ -415,16 +414,41 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 var fetched = exports.fetched = function fetched(callback) {
-    console.log("boi");
+
+    // fetch current prices
     var getReq = "fsyms=" + cryp.cryptoTickersString + "&tsyms=" + cryp.primaryCurrency;
     var url = "https://min-api.cryptocompare.com/data/pricemulti?" + getReq;
     xhr(null, url, function (res) {
         callback(res);
     }, { type: "GET" });
+
+    // fetch historical prices
+    // for each transaction, get the value at the time in USD so that it can be used for realized gain
+
 };
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var calculate = exports.calculate = function calculate(res) {
+
+    loopObject(cryp.cryptos, function (crypto) {
+        var cryptoValue = cryp.cryptos[crypto].balance.times(res[crypto][cryp.primaryCurrency]);
+        cryp.cryptos[crypto].valueInPrimaryCurrency = cryptoValue;
+        cryp.cryptoBalancesPrimary.push(cryptoValue); // for charts
+        cryp.portfolioValue = cryp.portfolioValue.plus(cryptoValue);
+    });
+};
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -504,28 +528,9 @@ if (page == "overview") {
     // table header - Value in primaryCurrency
     $("table.crypto-info-table thead td.value").text("Value in " + cryp.primaryCurrency);
     loopObject(cryp.cryptos, function (crypto) {
-        addBalanceRow(cryp.cryptos[crypto].balance, crypto, cryptoValue);
+        addBalanceRow(cryp.cryptos[crypto].balance, crypto, cryp.cryptos[crypto].valueInPrimaryCurrency);
     });
 } else if (page == "gains") {}
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var calculate = exports.calculate = function calculate(res) {
-
-    loopObject(cryp.cryptos, function (crypto) {
-        var cryptoValue = cryp.cryptos[crypto].balance.times(res[crypto][cryp.primaryCurrency]);
-        cryp.cryptoBalancesPrimary.push(cryptoValue); // for charts
-        cryp.portfolioValue = cryp.portfolioValue.plus(cryptoValue);
-    });
-};
 
 /***/ })
 /******/ ]);

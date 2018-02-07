@@ -8,6 +8,9 @@ global.dir = (dirPath) => {
 const PORT_INSECURE = process.env.PORT_INSECURE;
 const PORT_SECURE = process.env.PORT_SECURE;
 
+// ccxt api
+require("./node/ccxt");
+
 // http
 (() => {
 

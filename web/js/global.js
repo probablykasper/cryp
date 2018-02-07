@@ -32,7 +32,6 @@ $(document).ready(() => {
             require("./add_values");
         });
     }
-    // require("./old_global");
 
     console.log(cryp);
 });
