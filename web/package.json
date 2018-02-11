@@ -24,7 +24,8 @@
         "babel-register": "6.26.x",
         "babel-preset-env": "1.6.x",
 
-        "ccxt": "1.10.x",
+        "node-fetch": "2.0.x",
+        "cryptocompare": "0.4.x",
 
         "express": "4.16.x",
         "redirect-https": "1.1.x",

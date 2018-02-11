@@ -294,6 +294,7 @@ html .page-card .crypto-info {
   html .page-card .crypto-info .chart-container {
     margin-top: calc(15px + 12px*2);
     width: 0px;
+    min-height: 0px;
     flex-grow: 1;
     min-width: 200px; }
   html .page-card .crypto-info .crypto-info-table {

@@ -1,3 +1,11 @@
+Plan:
+Import historical prices into database from CryptoCompare.
+    https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=USD&limit=2000&toTs=1290161600
+    CryptoCompare lets you go infinitely back. How do we detect the start of the chart? (dont put in 2004 BTC prices)
+Mongoose model can be
+    - an object containing the symbol and an array of OHLC objects. Search for time.
+    - or a single OHLC object. Search for symbol and time.
+
 # Cryp
 Cryptocurrency portfolio tracker
 

@@ -8,12 +8,9 @@ global.dir = (dirPath) => {
 const PORT_INSECURE = process.env.PORT_INSECURE;
 const PORT_SECURE = process.env.PORT_SECURE;
 
-// ccxt api
-require("./node/ccxt");
-
 // http
 (() => {
-
+    
     const http = require("http");
     const server = http.createServer();
 
@@ -24,7 +21,7 @@ require("./node/ccxt");
 
     server.listen(PORT_INSECURE, () => {
         console.log();
-    })
+    });
 
     // const httpApp = express();
     //
@@ -90,6 +87,9 @@ require("./node/ccxt");
     }));
     app.use(passport.initialize());
     app.use(passport.session());
+
+    // candlestick
+    require("./node/candlestick");
 
     // routes
     require("./node/routes")(app);
