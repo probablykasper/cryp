@@ -10,19 +10,28 @@ function ccToDate(cryptoCompareTimestamp) {
 
 const hourRateLimit = process.env.CRYPTO_COMPARE_HOUR_RATE_LIMIT_HISTORY;
 const msToWait = Math.ceil(1/(hourRateLimit/60/60/1000));
-const endDate = new Date("2011-01-01 00:00:00Z");
 
-const crypto = "BTC";
-const fiat = "USD";
+const btcToDate = new Date("2011-01-01 00:00:00Z")
+const pairs = [
+    {
+        fromCurrency: "BTC",
+        toCurrency: "USD",
+        toDate: btcToDate,
+    },
+    {
+        fromCurrency: "USDT",
+        toCurrency: "BTC",
+        toDate: new Date("2017-05-01 00:00:00Z"),
+    }
+];
 
-function checkCandlesticks(data) {
-    // for (let i = 0; i < data.length; i += 200) {
+function checkCandlesticks(data, fromCurrency, toCurrency) {
     for (let i = 0; i < data.length; i++) {
         const currentDate = ccToDate(data[i].time);
-        console.log(currentDate);
+        // console.log(currentDate);
         Candlestick.findOne({
-            fromSymbol: crypto,
-            toSymbol: fiat,
+            fromSymbol: fromCurrency,
+            toSymbol: toCurrency,
             date: currentDate,
             timeframe: "hour"
         }, (err, candlestick) => {
@@ -32,8 +41,8 @@ function checkCandlesticks(data) {
             }
             if (candlestick == null) {
                 new Candlestick({
-                    fromSymbol: crypto,
-                    toSymbol: fiat,
+                    fromSymbol: fromCurrency,
+                    toSymbol: toCurrency,
                     date: currentDate,
                     timeframe: "hour",
                     open: data[i].open,
@@ -41,7 +50,7 @@ function checkCandlesticks(data) {
                     low: data[i].low,
                     close: data[i].close,
                 }).save().then((newCandlestick) => {
-                    console.log(`Created candlestick for time ${newCandlestick.date}`);
+                    console.log(`- -       created candlestick for time ${newCandlestick.date}`);
                 }).catch(console.error);
             }
 
@@ -49,102 +58,44 @@ function checkCandlesticks(data) {
     }
 }
 
-let currentDate = new Date();
-let i = 0;
-if (process.env.FETCH_CANDLESTICKS == "true") fetchDates();
-function fetchDates() {
-    cc.histoHour(crypto, fiat, {
+function fetchDates(fromCurrency, toCurrency, toDate, callback, currentDate = new Date()) {
+    console.log("- -   fetch dates");
+    console.log(`- -     toDate         : ${toDate}`);
+    console.log(`- -     currentDate    : ${currentDate}`);
+    cc.histoHour(fromCurrency, toCurrency, {
         limit: 2000,
         timestamp: currentDate
     }).then((data) => {
 
-        checkCandlesticks(data);
+        checkCandlesticks(data, fromCurrency, toCurrency);
         currentDate = ccToDate(data[0].time);
         currentDate.setHours(currentDate.getHours() - 1);
-        console.log(",,,,,", currentDate);
-        i++;
+        console.log(`- -     new currentDate: ${currentDate}`);
         setTimeout(() => {
-            if (currentDate > endDate) {
-                fetchDates();
-            } else {
-                "all dates fetched :)";
+            if (currentDate > toDate) {
+                fetchDates(fromCurrency, toCurrency, toDate, callback, currentDate);
+            } else  {
+                console.log(`- - pair ${fromCurrency}:${toCurrency} fetched`);
+                callback();
             }
         }, msToWait);
 
     }).catch(console.error);
 }
 
+function fetchCurrencies(currencyIndex = 0) {
+    const currentPair = pairs[currencyIndex];
+    const fromCurrency = currentPair.fromCurrency;
+    const toCurrency = currentPair.toCurrency;
+    const toDate = currentPair.toDate;
+    console.log(`- - - - - - - - - - fetching candlesticks`);
+    console.log(`- - pair ${fromCurrency}:${toCurrency}`);
+    console.log(`- - pair fetched to date ${toDate}`);
+    fetchDates(fromCurrency, toCurrency, toDate, () => {
+        currencyIndex++;
+        if (currencyIndex < pairs.length) fetchCurrencies(currencyIndex);
+        else console.log(`- - - - - - - - - - done fetching candlesticks`);
+    });
+}
 
-
-// const crypto = "BTC";
-// // let fiats = ["USD", "NOK"];
-// let fiats = ["USD"];
-// let fiatIndex = 0;
-// const endDate = new Date("2011-01-01 00:00:00Z");
-// function loopDates(currentDate, callback) {
-//     cc.histoHour(crypto, fiats[fiatIndex], {
-//         limit: 2000,
-//         timestamp: currentDate,
-//     }).then((data) => {
-//         const newDate = ccToDate(data[data.length-1].time);
-//         for (let i = 0; i < data.length; i++) {
-//             date = ccToDate(data[i].time);
-//             console.log(date);
-//         }
-//         if (endDate < new Date()) {
-//             setTimeout(() => {
-//                 loopDates(newDate, () => {
-//                     callback();
-//                     console.log("========================================1");
-//                 });
-//             }, msToWait);
-//             console.log("========================================2");
-//         } else {
-//             callback();
-//         }
-//         // loopDates();
-//         // console.log(data[0]);
-//         // console.log(data[data.length-1]);
-//     }).catch((err) => {
-//         console.log("====================================99");
-//         console.error(err);
-//     });
-// }
-// function loopFiats() {
-//     loopDates(new Date(), () => {
-//         console.log("----------------------------------------------------3");
-//         if (fiatIndex < fiats.length) {
-//             setTimeout(() => {
-//                 loopFiats();
-//             }, msToWait);
-//         }
-//     });
-//     fiatIndex++;
-// }
-// loopFiats();
-
-
-
-
-
-
-// const crypto = "BTC";
-// const fiat = "USD";
-// const limit = "2000";
-// const date = new Date("2011-01-01 00:00:00Z");
-// function getDate(cryptoCompareTimestamp) {
-//     timestamp = Number(cryptoCompareTimestamp+"000");
-//     const date = new Date(timestamp);
-//     console.log(date);
-// }
-//
-// cc.histoHour(crypto, fiat, {
-//     limit: limit,
-//     timestamp: date,
-// }).then((data) => {
-//     for (let i = 0; i < data.length; i++) {
-//         getDate(data[i].time);
-//     }
-//     // console.log(data[0]);
-//     // console.log(data[data.length-1]);
-// }).catch(console.error)
+if (process.env.FETCH_CANDLESTICKS == "true") fetchCurrencies();

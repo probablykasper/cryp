@@ -4,13 +4,13 @@ const fs = require("fs");
 global.dir = (dirPath) => {
     return require("path").resolve(__dirname, dirPath);
 }
+global.logErr = require("./node/log-err.js");
 
 const PORT_INSECURE = process.env.PORT_INSECURE;
 const PORT_SECURE = process.env.PORT_SECURE;
-
 // http
 (() => {
-    
+
     const http = require("http");
     const server = http.createServer();
 

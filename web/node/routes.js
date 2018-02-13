@@ -6,7 +6,7 @@ const logErr = (err) => {
         console.log("----------");
 };
 const scope = {scope: ["profile"]};
-const User = require("./mongoose-models").User;
+const updateTransactions = require("./update-transactions");
 
 function render(app, res, pugFile, variables, callback) {
     app.render(pugFile, variables, (err, html) => {
@@ -110,19 +110,30 @@ module.exports = (app) => {
 
     app.post("/update-transactions", (req, res) => {
         if (typeof req.body == "object") {
-            User.findOneAndUpdate({
-                _id: res.locals.userID
-            }, {
-                $set: {
-                    transactions: req.body
-                }
-            }, {
-                upsert: true
-            }, (err, updatedUser) => {
-                console.log(err);
+            updateTransactions(req.body, res.locals.userID, () => {
                 jsonRes(res);
             });
         }
+
+        // const calculateTransactions = require("./calculate-transactions");
+        // calculateTransactions(req.body, (transactions) => {
+        //
+        //     if (typeof transactions == "object") {
+        //         User.findOneAndUpdate({
+        //             _id: res.locals.userID
+        //         }, {
+        //             $set: {
+        //                 transactions: transactions
+        //             }
+        //         }, {
+        //             upsert: true
+        //         }, (err, updatedUser) => {
+        //             if (err) console.log(err);
+        //             jsonRes(res);
+        //         });
+        //     }
+        //
+        // });
     });
 
 }
