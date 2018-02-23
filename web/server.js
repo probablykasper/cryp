@@ -23,6 +23,21 @@ const PORT_SECURE = process.env.PORT_SECURE;
         console.log();
     });
 
+    // const httpApp = express();
+    //
+    // httpApp.use("/", require("redirect-https"))({
+    //     body: "<!-- Please use HTTPS instead. That's a \"you don't have a choice\", not a \"please\". -->"
+    // });
+    //
+    // httpApp.get("/", function (req, res) {
+    //     console.log("user http");
+    //     res.send("You found the HTTP server");
+    // });
+    //
+    // require("http").createServer(httpApp).listen(80, () => {
+    //     console.log("httpApp listening on port "+80);
+    // });
+
 })();
 
 // https
