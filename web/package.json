@@ -26,6 +26,8 @@
 
         "node-fetch": "2.0.x",
         "cryptocompare": "0.4.x",
+        "big.js": "5.0.x",
+        "ccxt": "1.10.x",
 
         "express": "4.16.x",
         "redirect-https": "1.1.x",

@@ -136,4 +136,20 @@ module.exports = (app) => {
         // });
     });
 
+    function exchangeImport() {
+        const ccxt = require("ccxt");
+        let binance = new ccxt.binance({
+            apiKey: "6VCiI4MCFRe8DsAeH6bEWDuJM9DILNEQpYkE5tzHUDa9qOp1DgLM9dDLYWhlpWFv",
+            secret: "xx3njBlYcRQZKpD1g7PmqFUi2pUJPfzDzwhIpYdhBOTMIfFfhPaAYNeEfKFMLCQM",
+        });
+        // console.log(binance.has.fetchOpenOrders);
+        // binance.fetchOrders();
+        binance.fetchOrders().then((result) => {
+            console.log(result);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+    exchangeImport();
+
 }
