@@ -1,5 +1,5 @@
 # Cryp
-Cryptocurrency portfolio tracker
+Cryptocurrency portfolio tracker (unfinished)
 
 ### Get Started
 - Install Docker Compose if you do not already have it.
