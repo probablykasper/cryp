@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "webpack": "3.10.x",
-        "node-sass": "4.7.x",
+        "node-sass": "4.14.x",
         "extract-text-webpack-plugin": "3.0.x",
         "css-loader": "0.28.x",
         "sass-loader": "6.0.x",
